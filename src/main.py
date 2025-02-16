@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from enums import airports
 from helpers import flights
@@ -22,8 +22,13 @@ def health():
 
 
 @app.post("/flights")
-def list_flights(flight_info: flights.Flight_Info):
-    return flights.list_flights(flight_info)
+def list_flights(flight_info: flights.Flight_Info, response: Response):
+    try:
+        return flights.list_flights(flight_info)
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        print(e)
+        return {"message": "An error occurred while processing the request."}
 
 
 @app.get("/airports")
