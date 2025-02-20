@@ -5,8 +5,12 @@ Check airplane schedules in a minimum time and get notified when the tickets are
 ## How to contribute:
 * Clone the project
 * Create a venv (python virtual env) and activate it (*Optional but preferrable)
+* Run a local postgresql database (you can use docker for easier setup):
+```shell
+docker run --name sky-plane-notifier-db -p 5432:5432 -e POSTGRES_PASSWORD=admin -e POSTGRES_DB=sky-plane-notifier-db -v ./db:/var/lib/postgresql/data postgres
+```
 * Run in the project directory:
-```powershell
+```shell
 pip install -r requirements.txt
 ```
 * Change directory to src:
