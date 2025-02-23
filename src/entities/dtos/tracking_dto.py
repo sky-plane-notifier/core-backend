@@ -1,21 +1,30 @@
-from entities.base.tracking_base import Tracking_Filter_Base
 from config.db import SQLModel
+from entities.base.tracking_base import TrackingFilterBase
+from entities.dtos.flight_dto import FlightResponse
+from typing import List
 
 
 
-class Tracking_Filter_Request(Tracking_Filter_Base):
+class TrackingFilterRequest(TrackingFilterBase):
     pass
 
-class Tracking_Request(SQLModel):
-    filter: Tracking_Filter_Request
+class TrackingRequest(SQLModel):
+    price: float
+
+    filter: TrackingFilterRequest
 
 
-class Tracking_Filter_Response(Tracking_Filter_Base):
+class TrackingFilterResponse(TrackingFilterBase):
     id: int
     
     tracking_id: int 
 
-class Tracking_Response(SQLModel):
+class TrackingResponse(SQLModel):
     id: int
-    filter: Tracking_Filter_Response
+    price: float
 
+    filter: TrackingFilterResponse
+
+class MatchingFlightResponse(SQLModel):
+    tracking_details: TrackingResponse
+    flight_matches: List[FlightResponse] = []

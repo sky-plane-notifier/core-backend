@@ -6,5 +6,5 @@ class Cabin_Type_Enum(str, Enum):
     BUSINESS_CLASS = "business"
 
 class Trip_Type_Enum(str, Enum):
-    ONE_WAY = "one_way"
+    ONE_WAY = "one-way"
     RETURN = "return"

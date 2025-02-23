@@ -1,19 +1,31 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
-class Passengers_Info(BaseModel):
-    adults: int
-    children: int
-    infants_in_seat: int
-    infants_on_lap: int
     
-class Flight_Info(BaseModel):
-    date: str
+class FlightInfo(BaseModel):
+    fly_date: str
     from_airport: str
     to_airport: str
     trip_type: str
     cabin_class: str
-    passengers_info: Passengers_Info
+    nb_adults: int
+    nb_children: int
+    nb_infants_in_seat: int
+    nb_infants_on_lap: int
 
-class AirportSearch(BaseModel):
-    search: str
+
+class Airline(BaseModel):
+    name: str
+    website: str
+
+class FlightResponse(BaseModel):
+    is_best: bool
+    departure_time: str
+    arrival_time: str
+    arrival_time_ahead: str
+    duration: str
+    stops: int
+    delay: Optional[str]
+    airline: Airline
+    price: str

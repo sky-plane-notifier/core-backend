@@ -1,5 +1,0 @@
-[x] try and explore google flights => get notified when prices changes => noties you when prices changes/goes down but not if they are below a fixed max price
-[x] feature => by giving search options => list available flights
-[x] enhance search listing => from and to (should be autocomplete)
-[] when i click select move to the airline website
-[] autocomplete options should be logically sorted (when i search tan => options: tangier - tantan - ... => because I am launching the search from morocco)
