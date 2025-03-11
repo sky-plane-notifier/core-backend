@@ -1,9 +1,8 @@
-from pydantic import BaseModel
 from typing import Optional
-
+from config.db import SQLModel
 
     
-class FlightInfo(BaseModel):
+class FlightInfo(SQLModel):
     fly_date: str
     from_airport: str
     to_airport: str
@@ -15,11 +14,11 @@ class FlightInfo(BaseModel):
     nb_infants_on_lap: int
 
 
-class Airline(BaseModel):
+class Airline(SQLModel):
     name: str
     website: str
 
-class FlightResponse(BaseModel):
+class FlightResponse(SQLModel):
     is_best: bool
     departure_time: str
     arrival_time: str

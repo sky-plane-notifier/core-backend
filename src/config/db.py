@@ -14,7 +14,8 @@ def get_session():
     with Session(engine) as session:
         yield session
 
+
 SessionDep = Annotated[Session, Depends(get_session)]
 
 
-__all__ = [engine, SessionDep, SQLModel]
+__all__ = [Session, SessionDep, SQLModel, engine, get_session]

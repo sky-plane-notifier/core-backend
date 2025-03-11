@@ -2,11 +2,14 @@ from config.db import SQLModel
 from entities.base.tracking_base import TrackingFilterBase
 from entities.dtos.flight_dto import FlightResponse
 from typing import List
+import datetime
+from typing import Optional
 
 
 
 class TrackingFilterRequest(TrackingFilterBase):
-    pass
+    fly_date: datetime.date
+    return_date: Optional[datetime.date] = None
 
 class TrackingRequest(SQLModel):
     price: float
@@ -16,6 +19,8 @@ class TrackingRequest(SQLModel):
 
 class TrackingFilterResponse(TrackingFilterBase):
     id: int
+    fly_date: str
+    return_date: Optional[str] = None
     
     tracking_id: int 
 

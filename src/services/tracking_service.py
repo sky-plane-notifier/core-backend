@@ -1,14 +1,17 @@
-from config.db import SessionDep
+from config.db import SessionDep, Session, get_session
 from entities.dtos.tracking_dto import TrackingRequest, TrackingResponse, MatchingFlightResponse
-from entities.dtos.flight_dto import FlightInfo
+from entities.dtos.flight_dto import FlightInfo, FlightResponse
 from entities.models.tracking_model import Tracking, TrackingFilter
 from sqlmodel import select
 from fastapi import HTTPException
 from services import flight_service
-from typing import Dict
+from typing import Dict, List
+import schedule
+from utilities.websockets.connection_manager import get_ws_manager
 
 
-def get_trackings(session: SessionDep) -> list[TrackingResponse]:
+
+def get_trackings(session: SessionDep) -> List[TrackingResponse]:
     trackings = session.exec(select(Tracking)).all()
     return trackings
 
@@ -51,10 +54,10 @@ def delete_tracking(tracking_id: int, session: SessionDep) -> bool:
     return True
 
 
-def get_flight_matches(session: SessionDep) -> Dict[int, MatchingFlightResponse]:
+def get_flight_matches(session: SessionDep | Session) -> Dict[int, MatchingFlightResponse]:
 
     flight_matches = {}
-    trackings = session.exec(select(Tracking)).all()
+    trackings = session.exec(select(Tracking).where(Tracking.resolved != True)).all()
     for tracking in trackings:
         tracking_flight_matches = []
 
@@ -68,12 +71,33 @@ def get_flight_matches(session: SessionDep) -> Dict[int, MatchingFlightResponse]
             except IndexError:
                 price = -1
             if 0 <= price <= tracking.price:
-                tracking_flight_matches.append(flight)
+                flight_response = {
+                    **flight
+                }
+                tracking_flight_matches.append(flight_response)
 
         if tracking_flight_matches:
+            tracking_response = {
+                "id": tracking.id,
+                "price": tracking.price,
+                "filter": {
+                    **tracking.filter.model_dump(),
+                    "fly_date": tracking.filter.fly_date.strftime("%Y-%m-%d"),
+                    "return_date": tracking.filter.return_date.strftime("%Y-%m-%d") if tracking.filter.return_date else None
+                }
+            }
             flight_matches[tracking.id] = {
-                "tracking_details": tracking,
+                "tracking_details": tracking_response,
                 "flight_matches": tracking_flight_matches
             }
+    
+    return flight_matches 
 
+def get_flight_matches_and_mark_resolved(session: SessionDep | Session) -> Dict[int, MatchingFlightResponse]:
+    flight_matches = get_flight_matches(session)
+    for tracking_id, match in flight_matches.items():
+        tracking = session.get(Tracking, tracking_id)
+        tracking.resolved = True
+        session.add(tracking)
+    session.commit()
     return flight_matches
