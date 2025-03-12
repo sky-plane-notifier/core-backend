@@ -8,4 +8,4 @@ async def tracking_notifier_job():
     with next(get_session()) as session:
         flight_matches = get_flight_matches(session)
         ws_manager = get_ws_manager()
-        await ws_manager.send_json("chrome", flight_matches)
+        await ws_manager.send_json("edg", flight_matches)

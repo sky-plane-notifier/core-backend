@@ -34,6 +34,10 @@ def update_tracking(tracking_id: int, tracking: TrackingRequest, session: Sessio
 def delete_tracking(tracking_id: int, session: SessionDep) -> bool:
     return tracking_service.delete_tracking(tracking_id, session)
 
+@router.put("/{tracking_id}/resolve")
+def resolve_tracking(tracking_id: int, to_resolve: bool, session: SessionDep) -> bool:
+    return tracking_service.resolve_tracking(tracking_id, to_resolve, session)
+
 
 @router.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: str, ws_manager: WSManagerDep, session: SessionDep):

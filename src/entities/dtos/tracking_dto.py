@@ -19,14 +19,15 @@ class TrackingRequest(SQLModel):
 
 class TrackingFilterResponse(TrackingFilterBase):
     id: int
-    fly_date: str
-    return_date: Optional[str] = None
+    fly_date: str | datetime.date
+    return_date: Optional[str | datetime.date] = None
     
     tracking_id: int 
 
 class TrackingResponse(SQLModel):
     id: int
     price: float
+    resolved: bool
 
     filter: TrackingFilterResponse
 

@@ -1,5 +1,4 @@
-import datetime
-from typing import Optional
+
 from enums.flight_enum import Cabin_Type_Enum, Trip_Type_Enum
 from config.db import SQLModel
 

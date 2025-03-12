@@ -1,4 +1,4 @@
-from config.db import SessionDep, Session, get_session
+from config.db import SessionDep, Session
 from entities.dtos.tracking_dto import TrackingRequest, TrackingResponse, MatchingFlightResponse
 from entities.dtos.flight_dto import FlightInfo, FlightResponse
 from entities.models.tracking_model import Tracking, TrackingFilter
@@ -6,7 +6,6 @@ from sqlmodel import select
 from fastapi import HTTPException
 from services import flight_service
 from typing import Dict, List
-import schedule
 from utilities.websockets.connection_manager import get_ws_manager
 
 
@@ -101,3 +100,12 @@ def get_flight_matches_and_mark_resolved(session: SessionDep | Session) -> Dict[
         session.add(tracking)
     session.commit()
     return flight_matches
+
+def resolve_tracking(tracking_id: int, to_resolve: bool, session: SessionDep) -> bool:
+    tracking = session.get(Tracking, tracking_id)
+    if not tracking:
+        raise HTTPException(status_code=404, detail="Tracking not found")
+    tracking.resolved = to_resolve
+    session.add(tracking)
+    session.commit()
+    return True
