@@ -34,3 +34,7 @@ class TrackingResponse(SQLModel):
 class MatchingFlightResponse(SQLModel):
     tracking_details: TrackingResponse
     flight_matches: List[FlightResponse] = []
+
+class MinimalMatchingFlightResponse(SQLModel):
+    tracking_details: TrackingResponse
+    flight_match: FlightResponse

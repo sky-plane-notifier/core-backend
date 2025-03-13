@@ -1,12 +1,11 @@
 from config.db import SessionDep, Session
-from entities.dtos.tracking_dto import TrackingRequest, TrackingResponse, MatchingFlightResponse
-from entities.dtos.flight_dto import FlightInfo, FlightResponse
+from entities.dtos.tracking_dto import TrackingRequest, TrackingResponse, MatchingFlightResponse, MinimalMatchingFlightResponse
+from entities.dtos.flight_dto import FlightInfo
 from entities.models.tracking_model import Tracking, TrackingFilter
 from sqlmodel import select
 from fastapi import HTTPException
 from services import flight_service
 from typing import Dict, List
-from utilities.websockets.connection_manager import get_ws_manager
 
 
 
@@ -79,6 +78,7 @@ def get_flight_matches(session: SessionDep | Session) -> Dict[int, MatchingFligh
             tracking_response = {
                 "id": tracking.id,
                 "price": tracking.price,
+                "resolved": tracking.resolved,
                 "filter": {
                     **tracking.filter.model_dump(),
                     "fly_date": tracking.filter.fly_date.strftime("%Y-%m-%d"),
@@ -92,14 +92,14 @@ def get_flight_matches(session: SessionDep | Session) -> Dict[int, MatchingFligh
     
     return flight_matches 
 
-def get_flight_matches_and_mark_resolved(session: SessionDep | Session) -> Dict[int, MatchingFlightResponse]:
+def get_minimal_flight_matches_for_notification(session: SessionDep | Session) -> Dict[int, MinimalMatchingFlightResponse]:
+
     flight_matches = get_flight_matches(session)
-    for tracking_id, match in flight_matches.items():
-        tracking = session.get(Tracking, tracking_id)
-        tracking.resolved = True
-        session.add(tracking)
-    session.commit()
-    return flight_matches
+
+    for tracking_id, tracking in flight_matches.items():
+        tracking["flight_match"] = min(tracking["flight_matches"], key=lambda x: x["price"])
+    
+    return flight_matches 
 
 def resolve_tracking(tracking_id: int, to_resolve: bool, session: SessionDep) -> bool:
     tracking = session.get(Tracking, tracking_id)
