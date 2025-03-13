@@ -1,3 +1,5 @@
 * listing is working with filter
 * getting airports by (country + city + airport) beginning
 * added the url of the airline to the listing flights response => (map airline name got from flight response to airline website using enums/Airline enum)
+* added tracking endpoints
+* added get_matching_flights to match available flights for all trackings

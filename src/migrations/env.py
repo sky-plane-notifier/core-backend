@@ -2,8 +2,8 @@ from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-from src.config.db import SQLModel
-from src.entities.models.tracking_model import *
+from config.db import SQLModel
+from entities.models.tracking_model import *
 
 from alembic import context
 
